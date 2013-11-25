@@ -1,34 +1,43 @@
 import unittest
+from BeautifulSoup import BeautifulSoup
 from src.CharacterParser import CharacterParser
 
 
 class CharacterParserTest(unittest.TestCase):
     characterParser = None
+    validBaseStats = {"Strength": "55", "Dexterity": "66", "Vitality": "11", "Intelligence": "22", "Mind": "33", "Piety": "44"}
+    validOffensiveStats = {"Accuracy": "534", "Critical Hit Rate": "34", "Determination": "53"}
+    validDefensiveStats = {"Defense": "735", "Parry": "508", "Magic Defense": "734"}
 
     def setUp(self):
-        self.characterParser = CharacterParser(self.htmlUnderTest)
+        #this is a little odd so I'll just say that I'm overriding the constructor to bypass the urllib calls
+        def CharacterParserInit(self):
+            self.html = None
+
+        setattr(CharacterParser, '__init__', CharacterParserInit)
+        self.characterParser = CharacterParser()
+        self.characterParser.soup = BeautifulSoup(self.htmlUnderTest)
 
     def testGracefulErrorOnElementNotFoundInGetStat(self):
         self.assertEqual(None, self.characterParser.getBaseStat("test"))
 
     def testBaseStats(self):
-        self.assertEqual("55", self.characterParser.getBaseStats()["Strength"])
-        self.assertEqual("55", self.characterParser.getBaseStats()["Strength"])
-        self.assertEqual("66", self.characterParser.getBaseStats()["Dexterity"])
-        self.assertEqual("11", self.characterParser.getBaseStats()["Vitality"])
-        self.assertEqual("22", self.characterParser.getBaseStats()["Intelligence"])
-        self.assertEqual("33", self.characterParser.getBaseStats()["Mind"])
-        self.assertEqual("44", self.characterParser.getBaseStats()["Piety"])
+        self.assertEqual(self.validBaseStats["Strength"], self.characterParser.getBaseStats()["Strength"])
+        self.assertEqual(self.validBaseStats["Dexterity"], self.characterParser.getBaseStats()["Dexterity"])
+        self.assertEqual(self.validBaseStats["Vitality"], self.characterParser.getBaseStats()["Vitality"])
+        self.assertEqual(self.validBaseStats["Intelligence"], self.characterParser.getBaseStats()["Intelligence"])
+        self.assertEqual(self.validBaseStats["Mind"], self.characterParser.getBaseStats()["Mind"])
+        self.assertEqual(self.validBaseStats["Piety"], self.characterParser.getBaseStats()["Piety"])
 
     def testOffensiveStats(self):
-        self.assertEqual("534", self.characterParser.getOffensiveStats()["Accuracy"])
-        self.assertEqual("34", self.characterParser.getOffensiveStats()["Critical Hit Rate"])
-        self.assertEqual("53", self.characterParser.getOffensiveStats()["Determination"])
+        self.assertEqual(self.validOffensiveStats["Accuracy"], self.characterParser.getOffensiveStats()["Accuracy"])
+        self.assertEqual(self.validOffensiveStats["Critical Hit Rate"], self.characterParser.getOffensiveStats()["Critical Hit Rate"])
+        self.assertEqual(self.validOffensiveStats["Determination"], self.characterParser.getOffensiveStats()["Determination"])
 
     def testDefensiveStats(self):
-        self.assertEqual("735", self.characterParser.getDefensiveStats()["Defense"])
-        self.assertEqual("508", self.characterParser.getDefensiveStats()["Parry"])
-        self.assertEqual("734", self.characterParser.getDefensiveStats()["Magic Defense"])
+        self.assertEqual(self.validDefensiveStats["Defense"], self.characterParser.getDefensiveStats()["Defense"])
+        self.assertEqual(self.validDefensiveStats["Parry"], self.characterParser.getDefensiveStats()["Parry"])
+        self.assertEqual(self.validDefensiveStats["Magic Defense"], self.characterParser.getDefensiveStats()["Magic Defense"])
 
 
 

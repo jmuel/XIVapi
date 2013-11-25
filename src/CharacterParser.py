@@ -1,3 +1,4 @@
+import urllib2
 from BeautifulSoup import BeautifulSoup
 
 class CharacterParser:
@@ -8,8 +9,13 @@ class CharacterParser:
     defensiveStatList = ["Defense", "Parry", "Magic Defense"]
 
 
-    def __init__(self, html):
+    def __init__(self, characterId):
+        html = self.__getHtml(characterId)
         self.soup = BeautifulSoup(html)
+
+    def __getHtml(self, characterId):
+        url = "http://eu.finalfantasyxiv.com/lodestone/character/" + str(characterId)
+        return urllib2.urlopen(url)
 
     def getAllStats(self):
         statMap = dict()
